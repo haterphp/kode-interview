@@ -1,12 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {theme} from "./constants/theme";
+import {BrowserRouter} from "react-router-dom";
+import {RouterProvider} from "./components/router";
+import {ThemeProvider} from "styled-components";
+import CssBaseline from "./components/global-styles";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider theme={theme}>
+        <CssBaseline/>
+        <BrowserRouter>
+            <RouterProvider/>
+        </BrowserRouter>
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
