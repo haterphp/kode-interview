@@ -5,7 +5,7 @@ import Typography from "../ui-kit/typography";
 const IndexPage: FC = () => {
     return (
         <Layout>
-            <Typography variant={"h1"}>qweasd</Typography>
+
         </Layout>
     )
 };

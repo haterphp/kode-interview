@@ -3,10 +3,12 @@ import styled, {
     ThemeFontVariants,
     ThemeFont, AnyStyledComponent, CommonThemeFontSettings,
 } from "styled-components";
+import * as _ from 'lodash';
 
 type TypographyProps = {
     variant: ThemeFontVariants;
     className?: string;
+    color?: string;
 }
 
 const Creator = (props: CommonThemeFontSettings) => `
@@ -14,17 +16,20 @@ const Creator = (props: CommonThemeFontSettings) => `
     font-size: ${props.size}px;
     font-weight: ${props.weight};
 `
-const TypographyStyleCreator = ({ adaptive, ...props }: ThemeFont) => `
+const TypographyStyleCreator = ({ adaptive, ...props }: ThemeFont, color: string) => `
     ${Creator(props)}
+    color: ${color};
 `
 
+
+type ComponentProps = Omit<TypographyProps, 'variant'>;
 const components: {[T in ThemeFontVariants]: AnyStyledComponent} = {
-    h1: styled.h1`${({ theme }) => TypographyStyleCreator(theme.fonts["h1"])}`,
-    h2: styled.h2`${({ theme }) => TypographyStyleCreator(theme.fonts["h2"])}`,
-    h3: styled.h3`${({ theme }) => TypographyStyleCreator(theme.fonts["h3"])}`,
-    body: styled.p`${({ theme }) => TypographyStyleCreator(theme.fonts["body"])}`,
-    footnote: styled.span`${({ theme }) => TypographyStyleCreator(theme.fonts["footnote"])}`,
-    step: styled.small`${({ theme }) => TypographyStyleCreator(theme.fonts["step"])}`,
+    h1: styled.h1<ComponentProps>`${({ theme, color }) => TypographyStyleCreator(_.get(theme, 'fonts.h1'), _.get(theme, color || "colors.base0"))}`,
+    h2: styled.h2<ComponentProps>`${({ theme, color }) => TypographyStyleCreator(_.get(theme, 'fonts.h2'), _.get(theme, color || "colors.base0"))}`,
+    h3: styled.h3<ComponentProps>`${({ theme, color }) => TypographyStyleCreator(_.get(theme, 'fonts.h3'), _.get(theme, color || "colors.base0"))}`,
+    body: styled.p<ComponentProps>`${({ theme, color }) => TypographyStyleCreator(_.get(theme, 'fonts.body'), _.get(theme, color || "colors.base0"))}`,
+    footnote: styled.span<ComponentProps>`${({ theme, color }) => TypographyStyleCreator(_.get(theme, 'fonts.span'), _.get(theme, color || "colors.base0"))}`,
+    step: styled.small<ComponentProps>`${({ theme, color }) => TypographyStyleCreator(_.get(theme, 'fonts.small'), _.get(theme, color || "colors.base0"))}`,
 }
 
 

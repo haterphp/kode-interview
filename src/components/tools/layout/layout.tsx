@@ -8,11 +8,18 @@ const LayoutWrapper = styled.div`
   flex-direction: column;
 `
 
+const ContentWrapper = styled.div`
+  min-height: 250vh;
+  background: #000;
+`
+
 const Layout: FC = ({ children }) => {
     return (
         <LayoutWrapper>
             <Header/>
-            {children}
+            <ContentWrapper>
+                {children}
+            </ContentWrapper>
         </LayoutWrapper>
     )
 }
