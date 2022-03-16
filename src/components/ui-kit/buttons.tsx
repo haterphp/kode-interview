@@ -1,6 +1,7 @@
-import styled from "styled-components";
+import styled, {keyframes} from "styled-components";
 import * as _ from 'lodash';
 import {FC, MouseEventHandler, useEffect, useState} from "react";
+import Color from "color";
 
 export const BaseButton = styled.button`
   background: transparent;
@@ -12,7 +13,22 @@ export const BaseButton = styled.button`
   overflow: hidden;
 `;
 
-const Ripple = styled.span<{ left: number, top: number }>`
+const ripple = keyframes`
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(10);
+    opacity: 0.175;
+  }
+  100% {
+    transform: scale(30);
+    opacity: 0;
+  }
+`
+
+const RippleComponent = styled.span<{ left: number, top: number }>`
   width: 20px;
   height: 20px;
   position: absolute;
@@ -20,7 +36,7 @@ const Ripple = styled.span<{ left: number, top: number }>`
   content: "";
   border-radius: 9999px;
   opacity: 1;
-  animation: 0.9s ease 1 forwards ripple-effect;
+  animation: 1.4s ease 1 forwards ${ripple};
 
   left: ${({ left }) => left}px;
   top: ${({ top }) => top}px;
@@ -38,12 +54,18 @@ const IconButtonStyled = styled(BaseButton)`
   border-color: ${({ theme }) => _.get(theme, 'colors.shade20')};
   border-radius: 50%;
 
+  transition: background-color .2s ease-in-out;
+  
   display: flex;
   align-items: center;
   justify-content: center;
   
-  & > ${Ripple} {
+  & > ${RippleComponent} {
     background: ${({ theme }) => _.get(theme, 'colors.shade20')};
+  }
+  
+  &:hover {
+    background: ${({ theme }) => Color(_.get(theme, 'colors.shade20')).lighten(.12).hex()};
   }
 `;
 
@@ -81,7 +103,7 @@ export const IconButton: FC<JSX.IntrinsicElements['button']> = ({ children, onCl
 
     return (
         <IconButtonStyled {...props}>
-            {isRippling && <Ripple left={coords.x} top={coords.y} />}
+            {isRippling && <RippleComponent left={coords.x} top={coords.y} />}
             {children}
         </IconButtonStyled>
     )

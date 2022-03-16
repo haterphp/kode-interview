@@ -56,8 +56,8 @@ const Header = () => {
         <HeaderWrapper ref={header}>
             <HeaderContent>
                 <Layout.Container>
-                    <Typography variant={"h1"}>Air Recipes</Typography>
-                    <Typography variant={"body"} color={"colors.shade50"}>Best Recipes for Best People</Typography>
+                    <Typography.H1>Air Recipes</Typography.H1>
+                    <Typography.Body color={"colors.shade40"}>Best Recipes for Best People</Typography.Body>
                     <Form onSubmit={handleSubmit(handlers.submit)}>
                         <Control.Input
                             type={"text"}
