@@ -39,6 +39,11 @@ const fonts: DefaultTheme['fonts'] = {
         family: ['Roboto', 'sans-serif'],
         weight: 700
     },
+    chip: {
+        size: 12,
+        family: ['Roboto', 'sans-serif'],
+        weight: 400
+    },
 }
 
 export const theme: DefaultTheme = {

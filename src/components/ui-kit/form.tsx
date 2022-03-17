@@ -4,6 +4,8 @@ import {ChangeEvent, ChangeEventHandler, FC, MouseEventHandler} from "react";
 import placeholder from "lodash/fp/placeholder";
 import CloseIcon from '../../assets/icons/close.svg';
 import {Controller, ControllerProps} from "react-hook-form";
+import {EVENTS} from "../../constants/app";
+import {useEvent} from "../../hooks/use-event";
 
 const InputGroup = styled.div`
   position: relative;
@@ -11,7 +13,7 @@ const InputGroup = styled.div`
 
 const IconWrapper = styled.div<{ position: "left" | "right" }>`
   position: absolute;
-  top: calc(50% - 9px);
+  top: calc(50% - 10.5px);
   ${({position}) => position}: 19px;
 
   & > img {
@@ -53,7 +55,6 @@ const Input: FC<InputProps> = ({
                                    handleRemoveDataFromField,
                                    ...rest
                                }) => {
-
     const props = _.pick(rest, ['type', 'name', 'placeholder', 'value', 'className', 'id'])
 
     return (
@@ -72,12 +73,16 @@ const Input: FC<InputProps> = ({
 const ControlledInput: FC<Omit<InputProps, 'handleChange' | 'handleRemoveDataFromField'>
     & { control: any, name: string }> = ({name, control, ...rest}) => {
 
+    const {dispatch} = useEvent();
     const handleChange = (onChange: (...event: any[]) => void) => {
         return (e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)
     }
 
     const handlerRemoveData = (onChange: (...event: any[]) => void) => {
-        return (e: unknown) => onChange("")
+        return (e: unknown) => {
+            dispatch<{ value: string }>(EVENTS.FILTER, { value: "" });
+            onChange("")
+        }
     }
 
     return (

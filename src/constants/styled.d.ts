@@ -8,7 +8,7 @@ declare module 'styled-components' {
         easy: string;
     }
 
-    export type ThemeFontVariants = "h1" | "h2" | "h3" | "body" | "footnote" | "step";
+    export type ThemeFontVariants = "h1" | "h2" | "h3" | "body" | "footnote" | "step" | "chip";
 
     export type CommonThemeFontSettings = {
         family: string[];

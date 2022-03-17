@@ -17,6 +17,7 @@ const Loader = (Component: FC) => (props: any) => (
  * Pages
  */
 const IndexPage = Loader(lazy(() => import('./pages/index')))
+const ShowPage = Loader(lazy(() => import('./pages/[id]')))
 
 
 /**
@@ -24,7 +25,8 @@ const IndexPage = Loader(lazy(() => import('./pages/index')))
  */
 
 const routes: RouteObject[] = [
-    { path: "/", element: <IndexPage/> }
+    { path: "/", element: <IndexPage/> },
+    { path: "/recipe/:id", element: <ShowPage/> }
 ];
 
 export const RouterProvider = () => {

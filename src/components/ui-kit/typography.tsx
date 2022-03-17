@@ -1,7 +1,7 @@
 import {FC} from "react";
 import styled, {
     ThemeFontVariants,
-    ThemeFont, AnyStyledComponent, CommonThemeFontSettings, css,
+    ThemeFont, AnyStyledComponent, css,
 } from "styled-components";
 import * as _ from 'lodash';
 
@@ -10,25 +10,38 @@ type TypographyProps = {
     color?: string;
 }
 
-const Creator = (props: CommonThemeFontSettings) => css`
-    font-family: ${props.family.join(', ')};
-    font-size: ${props.size}px;
-    font-weight: ${props.weight};
+const Creator = (prop: string) => css`
+  font-family: ${({ theme }) => _.get(theme, prop).family.join(', ')};
+  font-size: ${({ theme }) => _.get(theme, prop).size}px;
+  font-weight: ${({ theme }) => _.get(theme, prop).weight};
 `
-const TypographyStyleCreator = ({ adaptive, ...props }: ThemeFont, color: string) => css`
-    ${Creator(props)}
-    color: ${color};
-`
-
 
 type ComponentProps = Omit<TypographyProps, 'variant'>;
-const Typography: {[T in string]: AnyStyledComponent} = {
-    H1: styled.h1<ComponentProps>`${({ theme, color }) => TypographyStyleCreator(_.get(theme, 'fonts.h1'), _.get(theme, color || "colors.base0"))}`,
-    H2: styled.h2<ComponentProps>`${({ theme, color }) => TypographyStyleCreator(_.get(theme, 'fonts.h2'), _.get(theme, color || "colors.base0"))}`,
-    H3: styled.h3<ComponentProps>`${({ theme, color }) => TypographyStyleCreator(_.get(theme, 'fonts.h3'), _.get(theme, color || "colors.base0"))}`,
-    Body: styled.p<ComponentProps>`${({ theme, color }) => TypographyStyleCreator(_.get(theme, 'fonts.body'), _.get(theme, color || "colors.base0"))}`,
-    Footnote: styled.span<ComponentProps>`${({ theme, color }) => TypographyStyleCreator(_.get(theme, 'fonts.span'), _.get(theme, color || "colors.base0"))}`,
-    Step: styled.small<ComponentProps>`${({ theme, color }) => TypographyStyleCreator(_.get(theme, 'fonts.small'), _.get(theme, color || "colors.base0"))}`,
+const Typography: { [T in string]: AnyStyledComponent } = {
+    H1: styled.h1<ComponentProps>`
+      ${Creator('fonts.h1')}
+      color: ${({ theme, color }) => _.get(theme, color || "colors.base0")};
+    `,
+    H2: styled.h2<ComponentProps>`
+      ${Creator('fonts.h2')}
+      color: ${({ theme, color }) => _.get(theme, color || "colors.base0")};
+    `,
+    H3: styled.h2<ComponentProps>`
+      ${Creator('fonts.h3')}
+      color: ${({ theme, color }) => _.get(theme, color || "colors.base0")};
+    `,
+    Body: styled.h2<ComponentProps>`
+      ${Creator('fonts.body')}
+      color: ${({ theme, color }) => _.get(theme, color || "colors.base0")};
+    `,
+    Footnote: styled.h2<ComponentProps>`
+      ${Creator('fonts.footnote')}
+      color: ${({ theme, color }) => _.get(theme, color || "colors.base0")};
+    `,
+    Step: styled.h2<ComponentProps>`
+      ${Creator('fonts.step')}
+      color: ${({ theme, color }) => _.get(theme, color || "colors.base0")};
+    `,
 }
 
 export default Typography;

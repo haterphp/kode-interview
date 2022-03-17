@@ -5,12 +5,15 @@ import {theme} from "./constants/theme";
 import {BrowserRouter} from "react-router-dom";
 import {RouterProvider} from "./components/router";
 import {ThemeProvider} from "styled-components";
-import CssBaseline from "./components/global-styles";
+import './assets/fonts/Gilroy-Black.ttf';
+import './assets/fonts/Roboto-Bold.ttf';
+import './assets/fonts/Roboto-Regular.ttf';
+import './index.css';
+
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-        <CssBaseline/>
         <BrowserRouter>
             <RouterProvider/>
         </BrowserRouter>

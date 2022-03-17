@@ -9,14 +9,13 @@ const LayoutWrapper = styled.div`
 `
 
 const ContentWrapper = styled.div`
-  min-height: 250vh;
-  background: #000;
+  padding: 48px 0 60px 0 ;
 `
 
-const Layout: FC = ({ children }) => {
+const Layout: FC<{ smallHeader?: boolean }> = ({ children, smallHeader }) => {
     return (
         <LayoutWrapper>
-            <Header/>
+            <Header small={smallHeader || false} />
             <ContentWrapper>
                 {children}
             </ContentWrapper>

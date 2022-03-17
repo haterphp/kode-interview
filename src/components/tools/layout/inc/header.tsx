@@ -1,6 +1,6 @@
 import styled, {css} from "styled-components";
 import HeaderImg from '../../../../assets/img/header-image.png';
-import {useCallback, useEffect, useRef} from "react";
+import {FC, useCallback, useEffect, useRef} from "react";
 import Typography from "../../../ui-kit/typography";
 import Layout from "../../../ui-kit/layout";
 import Control from "../../../ui-kit/form";
@@ -8,6 +8,8 @@ import SearchIcon from '../../../../assets/icons/search.svg';
 import FilterIcon from '../../../../assets/icons/filterIcon.svg'
 import {useForm} from "react-hook-form";
 import {BaseButton, IconButton} from "../../../ui-kit/buttons";
+import {useEvent} from "../../../../hooks/use-event";
+import {EVENTS} from "../../../../constants/app";
 
 const HeaderWrapper = styled.div<{ small?: boolean }>`
   height: ${({small}) => small ? 292 : 600}px;
@@ -16,7 +18,6 @@ const HeaderWrapper = styled.div<{ small?: boolean }>`
   background-image: url(${HeaderImg});
   background-position: top right;
   background-repeat: no-repeat;
-  background-size: contain;
   background-attachment: fixed;
 `;
 
@@ -40,20 +41,20 @@ type FormBody = {
     search: string;
 }
 
-const Header = () => {
+const Header: FC<{ small: boolean }> = ({ small }) => {
 
     const header = useRef<HTMLDivElement>(null);
     const {control, handleSubmit} = useForm<FormBody>();
+    const {dispatch} = useEvent();
 
     const handlers = {
         submit: (data: FormBody) => {
-            console.log(data)
-            // TODO: submit handler
+            dispatch<{ value: string }>(EVENTS.FILTER, { value: data.search as string});
         }
     }
 
     return (
-        <HeaderWrapper ref={header}>
+        <HeaderWrapper ref={header} small={small}>
             <HeaderContent>
                 <Layout.Container>
                     <Typography.H1>Air Recipes</Typography.H1>
