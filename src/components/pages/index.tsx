@@ -11,6 +11,7 @@ import {useEvent} from "../../hooks/use-event";
 import * as _ from 'lodash'
 import {useStateWithRef} from "../../hooks/use-state-with-ref";
 import {useNavigate} from "react-router-dom";
+import {SkeletonCard} from "../tools/cards/skeleton-card";
 
 const PageWrapper = styled.div`
   display: flex;
@@ -51,8 +52,10 @@ const IndexPage: FC = () => {
 
     useEffect(() => {
         makeRequest<GetAllRecipesResponse>(Actions.getAll).then(data => {
-            setCards(data.recipes)
-            setFilteredCards(data.recipes);
+            setTimeout(() => {
+                setCards(data.recipes)
+                setFilteredCards(data.recipes);
+            }, 2000);
         })
     }, []);
 
@@ -74,7 +77,9 @@ const IndexPage: FC = () => {
             <LayoutComponents.Container>
                 <PageWrapper>
                     {
-                        filteredCards.map(({ id, ...props }) => <BaseCard key={id} onClick={handleRedirect(id)} {...props} />)
+                        filteredCards.length
+                            ? filteredCards.map(({ id, ...props }) => <BaseCard key={id} onClick={handleRedirect(id)} {...props} />)
+                            : Array.from({ length: 6 }, (_, key) => <SkeletonCard key={key}/>)
                     }
                 </PageWrapper>
             </LayoutComponents.Container>

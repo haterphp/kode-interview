@@ -11,7 +11,7 @@ import {
 } from "../../services/api/recipes/types";
 import {makeRequest} from "../../services/api/api";
 import Actions from "../../services/api/recipes/requests";
-import {parseTimeToCard, Skeleton, useGetFields} from "../../services/card-service";
+import {parseTimeToCard, useGetFields} from "../../services/card-service";
 import Typography from "../ui-kit/typography";
 import styled, {css} from "styled-components";
 import {useEvent} from "../../hooks/use-event";
@@ -23,6 +23,7 @@ import {RecipeBadge} from "../tools/badge/recipe-badge";
 import {DifficultyBadge} from "../tools/badge/difficulty-badge";
 import IngredientList from "../tools/lists/ingredient-list";
 import InstructionsList from "../tools/lists/instuctions-list";
+import {Skeleton} from "../tools/skeleton";
 
 type RecipePageParams = {
     id: string

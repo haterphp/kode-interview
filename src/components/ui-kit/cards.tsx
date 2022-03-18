@@ -12,7 +12,7 @@ const Card = {
       min-height: 384px;
     `,
     Image: styled.img`
-      height: 196px;
+      height: 100%;
       width: 100%;
       object-fit: cover;
     `,
@@ -29,16 +29,20 @@ const Card = {
       -webkit-line-clamp: 4;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      margin-bottom: 8px;
     `,
-    Chip: styled.div`
+    Chip: styled.div<{ extra?: string }>`
       padding: 8px 12px;
       font-size: 12px;
       border-radius: 1.5rem;
       background: ${({ theme }) => _.get(theme, 'colors.base1')};
       font-family: ${({ theme }) => _.get(theme, 'fonts.chip').family.join(', ')};
+      
+      ${({ extra }) => extra}
     `,
     ImageContainer: styled.div`
       position: relative;
+      height: 196px;
     `,
     ChipContainer: styled.div`
       position: absolute;
