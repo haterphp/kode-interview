@@ -8,6 +8,7 @@ import * as _ from 'lodash';
 type TypographyProps = {
     className?: string;
     color?: string;
+    extra?: string;
 }
 
 const Creator = (prop: string) => css`
@@ -21,26 +22,32 @@ const Typography: { [T in string]: AnyStyledComponent } = {
     H1: styled.h1<ComponentProps>`
       ${Creator('fonts.h1')}
       color: ${({ theme, color }) => _.get(theme, color || "colors.base0")};
+      ${({ extra }) => extra}
     `,
     H2: styled.h2<ComponentProps>`
       ${Creator('fonts.h2')}
       color: ${({ theme, color }) => _.get(theme, color || "colors.base0")};
+      ${({ extra }) => extra}
     `,
-    H3: styled.h2<ComponentProps>`
+    H3: styled.h3<ComponentProps>`
       ${Creator('fonts.h3')}
       color: ${({ theme, color }) => _.get(theme, color || "colors.base0")};
+      ${({ extra }) => extra}
     `,
-    Body: styled.h2<ComponentProps>`
+    Body: styled.p<ComponentProps>`
       ${Creator('fonts.body')}
       color: ${({ theme, color }) => _.get(theme, color || "colors.base0")};
+      ${({ extra }) => extra}
     `,
-    Footnote: styled.h2<ComponentProps>`
+    Footnote: styled.span<ComponentProps>`
       ${Creator('fonts.footnote')}
       color: ${({ theme, color }) => _.get(theme, color || "colors.base0")};
+      ${({ extra }) => extra}
     `,
-    Step: styled.h2<ComponentProps>`
+    Step: styled.small<ComponentProps>`
       ${Creator('fonts.step')}
       color: ${({ theme, color }) => _.get(theme, color || "colors.base0")};
+      ${({ extra }) => extra}
     `,
 }
 

@@ -10,6 +10,7 @@ import {useForm} from "react-hook-form";
 import {BaseButton, IconButton} from "../../../ui-kit/buttons";
 import {useEvent} from "../../../../hooks/use-event";
 import {EVENTS} from "../../../../constants/app";
+import {useNavigate} from "react-router-dom";
 
 const HeaderWrapper = styled.div<{ small?: boolean }>`
   height: ${({small}) => small ? 292 : 600}px;
@@ -46,6 +47,7 @@ const Header: FC<{ small: boolean }> = ({ small }) => {
     const header = useRef<HTMLDivElement>(null);
     const {control, handleSubmit} = useForm<FormBody>();
     const {dispatch} = useEvent();
+    const navigate = useNavigate();
 
     const handlers = {
         submit: (data: FormBody) => {
@@ -57,7 +59,7 @@ const Header: FC<{ small: boolean }> = ({ small }) => {
         <HeaderWrapper ref={header} small={small}>
             <HeaderContent>
                 <Layout.Container>
-                    <Typography.H1>Air Recipes</Typography.H1>
+                    <Typography.H1 extra={" cursor: pointer; "} onClick={(e: unknown) => navigate('/')}>Air Recipes</Typography.H1>
                     <Typography.Body color={"colors.shade40"}>Best Recipes for Best People</Typography.Body>
                     <Form onSubmit={handleSubmit(handlers.submit)}>
                         <Control.Input

@@ -22,6 +22,18 @@ const PageWrapper = styled.div`
     margin: 12px 10px;
     width: calc(33% - 17px);
   }
+  
+  @media all and (max-width: ${({ theme }) => theme.fn.breakpoint('lg')}) {
+    & > * {
+      width: calc(50% - 20px);
+    }
+  }
+
+  @media all and (max-width: ${({ theme }) => theme.fn.breakpoint('md')}) {
+    & > * {
+      width: calc(100%);
+    }
+  }
 `
 
 const IndexPage: FC = () => {
@@ -34,7 +46,7 @@ const IndexPage: FC = () => {
     const filterCallback = useCallback((e) => {
         const value = e.detail.value;
         const cards = cardsRef.current;
-        setFilteredCards(cards.filter(c => c.title.includes(value)))
+        setFilteredCards(cards.filter(c => c.title.toLowerCase().includes(value)))
     }, []);
 
     useEffect(() => {

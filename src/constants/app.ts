@@ -1,3 +1,4 @@
 export enum EVENTS {
-    FILTER= "APPLY_FILTER"
+    FILTER= "APPLY_FILTER",
+    RECIPE_LOADED = "RECIPE_LOADED",
 }
