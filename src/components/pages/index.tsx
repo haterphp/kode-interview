@@ -39,15 +39,19 @@ const PageWrapper = styled.div`
 
 const IndexPage: FC = () => {
 
-    const [cards, setCards, cardsRef] = useStateWithRef<Recipe[]>([])
-    const [filteredCards, setFilteredCards] = useState<Recipe[]>([]);
+    const [cards, setCards, cardsRef] = useStateWithRef<Recipe[]>([]);
+    const [filter, setFilter] = useState({});
+    const [filteredCards, setFilteredCards] = useState<Recipe[] | undefined>(undefined);
     const {listen, omit} = useEvent();
     const navigate = useNavigate();
 
     const filterCallback = useCallback((e) => {
         const value = e.detail.value;
         const cards = cardsRef.current;
-        setFilteredCards(cards.filter(c => c.title.toLowerCase().includes(value)))
+        setFilteredCards(undefined)
+        setTimeout(() => {
+            setFilteredCards(cards.filter(c => c.title.toLowerCase().includes(value.toLowerCase())))
+        }, 1000);
     }, []);
 
     useEffect(() => {
@@ -64,11 +68,13 @@ const IndexPage: FC = () => {
         return () => omit(EVENTS.FILTER, filterCallback)
     }, [filterCallback])
 
-    const handleRedirect = (id: Recipe['id']): MouseEventHandler => {
-        return e => {
-            e.preventDefault();
-            e.stopPropagation();
-            navigate(`/recipe/${id}`);
+    const handlers = {
+        redirect: (id: Recipe['id']): MouseEventHandler => {
+            return e => {
+                e.preventDefault();
+                e.stopPropagation();
+                navigate(`/recipe/${id}`);
+            }
         }
     }
 
@@ -77,8 +83,8 @@ const IndexPage: FC = () => {
             <LayoutComponents.Container>
                 <PageWrapper>
                     {
-                        filteredCards.length
-                            ? filteredCards.map(({ id, ...props }) => <BaseCard key={id} onClick={handleRedirect(id)} {...props} />)
+                        filteredCards
+                            ? filteredCards.map(({ id, ...props }) => <BaseCard key={id} onClick={handlers.redirect(id)} {...props} />)
                             : Array.from({ length: 6 }, (_, key) => <SkeletonCard key={key}/>)
                     }
                 </PageWrapper>

@@ -24,10 +24,17 @@ import {DifficultyBadge} from "../tools/badge/difficulty-badge";
 import IngredientList from "../tools/lists/ingredient-list";
 import InstructionsList from "../tools/lists/instuctions-list";
 import {Skeleton} from "../tools/skeleton";
+import RecipeCarousel from "../tools/carousel/recipe-carousel";
 
 type RecipePageParams = {
     id: string
 }
+
+const Col = styled.div<{ extra?: string }>`
+  width: 50%;
+  padding: 0 10px;
+  ${({ extra }) => extra}
+`;
 
 const RecipePageWrapper = styled.div`
   padding-top: 60px;
@@ -36,21 +43,33 @@ const RecipePageWrapper = styled.div`
 
   display: flex;
   flex-wrap: wrap;
-`;
+  
+  @media all and (max-width: ${({ theme }) => theme.fn.breakpoint('lg')}) {
+    
+    & {
+      flex-direction: column-reverse;
+    }
+    
+    & > ${Col} {
+      width: calc(100%);
+    }
 
-const Col = styled.div`
-  width: 50%;
-  padding: 0 10px;
+    & > ${Col}:first-child {
+      margin-top: 15px;
+    }
+  }
 `;
 
 
 const RecipeBadgeContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  margin: 0 -15px ;
   margin-bottom: 34px;
-
-  & > *:not(:first-child) {
-    margin-left: 33px;
+  
+  & > * {
+    margin: 5px 15px;
   }
 `
 
@@ -85,7 +104,7 @@ const RecipePage = () => {
                         <Typography.H2 extra={" margin-bottom: 18px; width: 100%; "}>
                             {recipe.get('title', <Skeleton type={"title"}/>)}
                         </Typography.H2>
-                        <Typography.Body extra={" margin-bottom: 16px; width: 100%; "}>
+                        <Typography.Body extra={" margin-bottom: 16px; width: 90%; "}>
                             {recipe.get('description', <Skeleton type={"text"}/>)}
                         </Typography.Body>
                         <RecipeBadgeContainer>
@@ -129,6 +148,9 @@ const RecipePage = () => {
                             <Typography.H3>Instructions</Typography.H3>
                             <InstructionsList instructions={recipe.getValue('instructions')}/>
                         </ListContainer>
+                    </Col>
+                    <Col>
+                        <RecipeCarousel images={recipe.getValue('images')} />
                     </Col>
                 </RecipePageWrapper>
             </LayoutComponents.Container>
