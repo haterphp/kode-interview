@@ -8,6 +8,7 @@ import {EVENTS} from "../../constants/app";
 import {useEvent} from "../../hooks/use-event";
 import DoneIcon from '../../assets/icons/done.svg';
 import EmptyStateDoneIcon from '../../assets/icons/empty-state-done.svg';
+import {FilterBody} from "../../services/filter";
 
 const InputGroup = styled.div`
   position: relative;
@@ -83,7 +84,7 @@ const ControlledInput: FC<Omit<InputProps, 'handleChange' | 'handleRemoveDataFro
 
     const handlerRemoveData = (onChange: (...event: any[]) => void) => {
         return (e: unknown) => {
-            dispatch<{ value: string }>(EVENTS.FILTER, { value: "" });
+            dispatch<Pick<FilterBody, 'title'>>(EVENTS.FILTER, { title: ""});
             onChange("")
         }
     }

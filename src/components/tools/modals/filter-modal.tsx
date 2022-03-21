@@ -1,4 +1,4 @@
-import {Dispatch, FC, SetStateAction} from "react";
+import {Dispatch, FC, SetStateAction, useContext, useEffect} from "react";
 import Modal from "react-modal";
 import {theme} from "../../../constants/theme";
 import * as _ from 'lodash'
@@ -10,10 +10,13 @@ import {useForm} from "react-hook-form";
 import {ModalContent, ModalFooter} from "./inc/component";
 import FilterRange from "./tools/filter-range";
 import {Button} from "../../ui-kit/buttons";
+import {FilterBody} from "../../../services/filter";
+import {useEvent} from "../../../hooks/use-event";
+import {EVENTS} from "../../../constants/app";
+import {FilterContext} from "../layout/context";
 
 type FilterModalProps = {
     control: [boolean, Dispatch<SetStateAction<boolean>>],
-    formControl: any,
 }
 
 const FilterModalStyles = {
@@ -42,19 +45,36 @@ const FilterModalFooter = styled(ModalFooter)`
   align-items: center;
 `
 
-const filtersCuisine = [
-    "Caribbean",
-    "Greek",
-    "French",
-    "Indian",
-    "Chinese",
-];
+type FilterModalBody = Omit<FilterBody, 'title'>;
 
-const FilterModal: FC<FilterModalProps> = ({ control: [open, setOpen], formControl }) => {
+const FilterModal: FC<FilterModalProps> = ({ control: [open, setOpen] }) => {
 
+    const {dispatch} = useEvent();
+    const {filters, setSelectedFilters, selectedFilters} = useContext(FilterContext);
+    const {control, handleSubmit, reset, formState: {isDirty}, setValue, resetField} = useForm<FilterModalBody>({ defaultValues: { cuisine: selectedFilters } })
+
+    useEffect(() => {
+        open && reset({
+            cuisine: selectedFilters
+        })
+    }, [open])
 
     const handlers = {
-        close: (e: unknown) => setOpen(false)
+        close: (e: unknown) => {
+            resetField('cuisine');
+            setOpen(false)
+        },
+        submit: (data: FilterModalBody) => {
+            dispatch<FilterModalBody>(EVENTS.FILTER, data);
+            setSelectedFilters(data.cuisine);
+            setOpen(false);
+        },
+        clear: (e: unknown) => {
+            // e.preventDefault();
+            resetField('cuisine');
+            setSelectedFilters(filters);
+            dispatch<FilterModalBody>(EVENTS.FILTER, { cuisine: filters })
+        }
     }
 
     return (
@@ -64,21 +84,23 @@ const FilterModal: FC<FilterModalProps> = ({ control: [open, setOpen], formContr
             onRequestClose={handlers.close}
         >
             <CloseButton onRequestClose={handlers.close} />
-            <ModalContent>
-                <Typography.H3>Filter</Typography.H3>
-                <CheckboxContainer>
-                    {
-                        filtersCuisine.map((filter) => (
-                            <Control.CheckboxControlled key={filter} control={formControl} name={"cuisine"} label={filter} />
-                        ))
-                    }
-                </CheckboxContainer>
-                <FilterRange/>
-            </ModalContent>
-            <FilterModalFooter>
-                <Button variant={"outlined"}>Clear</Button>
-                <Button variant={"filled"}>Show Recipes</Button>
-            </FilterModalFooter>
+            <Control.Form onSubmit={handleSubmit(handlers.submit)}>
+                <ModalContent>
+                    <Typography.H3>Filter</Typography.H3>
+                    <CheckboxContainer>
+                        {
+                            filters.map((filter) => (
+                                <Control.CheckboxControlled key={filter} control={control} name={"cuisine"} label={filter} />
+                            ))
+                        }
+                    </CheckboxContainer>
+                    <FilterRange breakpoints={[ 100, 1200 ]} />
+                </ModalContent>
+                <FilterModalFooter>
+                    { isDirty ? <Button variant={"outlined"} type={"button"} onClick={handlers.clear}>Clear</Button> : <span/>}
+                    <Button variant={"filled"}>Show Recipes</Button>
+                </FilterModalFooter>
+            </Control.Form>
         </Modal>
     )
 }

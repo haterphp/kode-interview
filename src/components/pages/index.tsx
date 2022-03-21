@@ -1,4 +1,4 @@
-import {FC, MouseEventHandler, useCallback, useEffect, useRef, useState} from "react";
+import {FC, MouseEventHandler, useCallback, useContext, useEffect, useRef, useState} from "react";
 import Layout from "../tools/layout/layout";
 import {BaseCard} from "../tools/cards/base-card";
 import LayoutComponents from "../ui-kit/layout";
@@ -6,12 +6,10 @@ import styled from "styled-components";
 import {makeRequest} from "../../services/api/api";
 import Actions from "../../services/api/recipes/requests";
 import {GetAllRecipesResponse, Recipe} from "../../services/api/recipes/types";
-import {EVENTS} from "../../constants/app";
-import {useEvent} from "../../hooks/use-event";
-import * as _ from 'lodash'
-import {useStateWithRef} from "../../hooks/use-state-with-ref";
 import {useNavigate} from "react-router-dom";
 import {SkeletonCard} from "../tools/cards/skeleton-card";
+import {useFilter} from "../../services/filter";
+import {FilterContext} from "../tools/layout/context";
 
 const PageWrapper = styled.div`
   display: flex;
@@ -39,34 +37,27 @@ const PageWrapper = styled.div`
 
 const IndexPage: FC = () => {
 
-    const [cards, setCards, cardsRef] = useStateWithRef<Recipe[]>([]);
-    const [filter, setFilter] = useState({});
-    const [filteredCards, setFilteredCards] = useState<Recipe[] | undefined>(undefined);
-    const {listen, omit} = useEvent();
     const navigate = useNavigate();
-
-    const filterCallback = useCallback((e) => {
-        const value = e.detail.value;
-        const cards = cardsRef.current;
-        setFilteredCards(undefined)
-        setTimeout(() => {
-            setFilteredCards(cards.filter(c => c.title.toLowerCase().includes(value.toLowerCase())))
-        }, 1000);
-    }, []);
+    const { filters } = useContext(FilterContext)
+    const { filtered, handlers: {register} } = useFilter<Recipe[]>(
+        undefined,
+        (filter, state) => {
+            console.log(filter)
+            return state
+                .filter(item => item.title.toLowerCase().includes(filter.title.toLowerCase()))
+                .reduce((arr, item) => {
+                    if(filter.cuisine.includes(item.cuisine.title)) arr = [...arr, item];
+                    return arr;
+                }, [] as Recipe[]);
+        },
+        { title: "", cuisine: filters }
+    );
 
     useEffect(() => {
         makeRequest<GetAllRecipesResponse>(Actions.getAll).then(data => {
-            setTimeout(() => {
-                setCards(data.recipes)
-                setFilteredCards(data.recipes);
-            }, 2000);
+            register(data.recipes)
         })
     }, []);
-
-    useEffect(() => {
-        listen(EVENTS.FILTER, filterCallback)
-        return () => omit(EVENTS.FILTER, filterCallback)
-    }, [filterCallback])
 
     const handlers = {
         redirect: (id: Recipe['id']): MouseEventHandler => {
@@ -75,7 +66,7 @@ const IndexPage: FC = () => {
                 e.stopPropagation();
                 navigate(`/recipe/${id}`);
             }
-        }
+        },
     }
 
     return (
@@ -83,8 +74,8 @@ const IndexPage: FC = () => {
             <LayoutComponents.Container>
                 <PageWrapper>
                     {
-                        filteredCards
-                            ? filteredCards.map(({ id, ...props }) => <BaseCard key={id} onClick={handlers.redirect(id)} {...props} />)
+                        filtered
+                            ? filtered.map(({ id, ...props }) => <BaseCard key={id} onClick={handlers.redirect(id)} {...props} />)
                             : Array.from({ length: 6 }, (_, key) => <SkeletonCard key={key}/>)
                     }
                 </PageWrapper>

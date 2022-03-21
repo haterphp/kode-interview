@@ -1,6 +1,7 @@
-import {FC} from "react";
+import {FC, useState} from "react";
 import styled from "styled-components";
 import Header from "./inc/header";
+import {FilterContext} from "./context";
 
 const LayoutWrapper = styled.div`
   min-height: 100vh;
@@ -13,12 +14,31 @@ const ContentWrapper = styled.div`
 `
 
 const Layout: FC<{ smallHeader?: boolean }> = ({ children, smallHeader }) => {
+
+    const filters = [
+        'Caribbean',
+        'Greek',
+        'French',
+        'Indian',
+        'Chinese',
+    ];
+
+    const [selectedFilters, setSelectedFilters] = useState(filters);
+
+    const context = {
+        filters,
+        selectedFilters,
+        setSelectedFilters
+    }
+
     return (
         <LayoutWrapper>
-            <Header small={smallHeader || false} />
-            <ContentWrapper>
-                {children}
-            </ContentWrapper>
+            <FilterContext.Provider value={context}>
+                <Header small={smallHeader || false} />
+                <ContentWrapper>
+                    {children}
+                </ContentWrapper>
+            </FilterContext.Provider>
         </LayoutWrapper>
     )
 }

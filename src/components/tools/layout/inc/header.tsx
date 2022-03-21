@@ -1,6 +1,6 @@
 import styled, {css} from "styled-components";
 import HeaderImg from '../../../../assets/img/header-image.png';
-import {FC, useCallback, useEffect, useRef, useState} from "react";
+import {FC, useCallback, useContext, useEffect, useRef, useState} from "react";
 import Typography from "../../../ui-kit/typography";
 import Layout from "../../../ui-kit/layout";
 import Control from "../../../ui-kit/form";
@@ -12,6 +12,8 @@ import {useEvent} from "../../../../hooks/use-event";
 import {EVENTS} from "../../../../constants/app";
 import {useNavigate} from "react-router-dom";
 import FilterModal from "../../modals/filter-modal";
+import {FilterBody} from "../../../../services/filter";
+import {FilterContext} from "../context";
 
 const HeaderWrapper = styled.div<{ small?: boolean }>`
   height: ${({small}) => small ? 292 : 600}px;
@@ -60,8 +62,7 @@ const Header: FC<{ small: boolean }> = ({ small }) => {
 
     const handlers = {
         submit: (data: FormBody) => {
-            console.log(data)
-            dispatch<{ value: string }>(EVENTS.FILTER, { value: data.search as string});
+            dispatch<Pick<FilterBody, 'title'>>(EVENTS.FILTER, { title: data.search as string});
         },
         openModal: (e: unknown) => setModalState(true)
     }
@@ -89,7 +90,7 @@ const Header: FC<{ small: boolean }> = ({ small }) => {
                     </Layout.Container>
                 </HeaderContent>
             </HeaderWrapper>
-            <FilterModal control={[modalState, setModalState]} formControl={control}/>
+            <FilterModal control={[modalState, setModalState]}/>
         </>
 
     )
