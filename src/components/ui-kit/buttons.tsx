@@ -2,6 +2,7 @@ import styled, {css, keyframes} from "styled-components";
 import * as _ from 'lodash';
 import {FC, MouseEventHandler, useEffect, useState} from "react";
 import Color from "color";
+import {Ripple} from "./ripple";
 
 export const BaseButton = styled.button`
   background: transparent;
@@ -18,8 +19,6 @@ type ButtonStyledProps = {
     color: string;
 }
 
-const RippleComponent = styled.span``
-
 const ButtonStyled = styled(BaseButton)<ButtonStyledProps>`
   padding: 10px 15px;
   text-transform: uppercase;
@@ -32,25 +31,17 @@ const ButtonStyled = styled(BaseButton)<ButtonStyledProps>`
   color: ${({theme, variant, color}) => variant === 'outlined' ? _.get(theme, color) : _.get(theme, "colors.base1")};
 
   transition: background-color .2s ease-in-out,
-  box-shadow .2s ease-in-out;
+              box-shadow .2s ease-in-out;
 
   ${({variant}) => variant === "filled" && css`
     &:hover {
       box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
-    }
-
-    & > ${RippleComponent} {
-      background: ${({theme}) => _.get(theme, 'colors.base1')};
     }
   `}
 
   ${({variant, color}) => variant === "outlined" && css`
     &:hover {
       background: ${({theme}) => Color(_.get(theme, color)).lighten(1).hex()};
-
-      & > ${RippleComponent} {
-        background: ${({theme}) => Color(_.get(theme, color)).lighten(.5).hex()};
-      }
     }
   `}
 `;
@@ -66,14 +57,6 @@ const IconButtonStyled = styled(BaseButton)`
   display: flex;
   align-items: center;
   justify-content: center;
-
-  & > ${RippleComponent} {
-    background: ${({theme}) => _.get(theme, 'colors.shade20')};
-  }
-
-  &:hover {
-    background: ${({theme}) => Color(_.get(theme, 'colors.shade20')).lighten(.12).hex()};
-  }
 `;
 
 export const IconButton: FC<JSX.IntrinsicElements['button']> = ({children, onClick, ...rest}) => {
@@ -86,6 +69,7 @@ export const IconButton: FC<JSX.IntrinsicElements['button']> = ({children, onCli
     return (
         <IconButtonStyled {...props}>
             {children}
+            <Ripple duration={1000} color={"colors.shade20"} />
         </IconButtonStyled>
     )
 }
@@ -101,6 +85,7 @@ export const Button: FC<JSX.IntrinsicElements['button'] & Omit<ButtonStyledProps
         return (
             <ButtonStyled {...props}>
                 {children}
+                <Ripple duration={1000} color={props.variant === "filled" ? "colors.base1" : props.color} />
             </ButtonStyled>
         )
     }

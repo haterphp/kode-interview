@@ -9,14 +9,17 @@ import './assets/fonts/Gilroy-Black.ttf';
 import './assets/fonts/Roboto-Bold.ttf';
 import './assets/fonts/Roboto-Regular.ttf';
 import './index.css';
+import {FilterProvider} from "./services/filter";
 
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-        <BrowserRouter>
-            <RouterProvider/>
-        </BrowserRouter>
+        <FilterProvider>
+            <BrowserRouter>
+                <RouterProvider/>
+            </BrowserRouter>
+        </FilterProvider>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')

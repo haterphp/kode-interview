@@ -10,10 +10,9 @@ import {useForm} from "react-hook-form";
 import {ModalContent, ModalFooter} from "./inc/component";
 import FilterRange from "./tools/filter-range";
 import {Button} from "../../ui-kit/buttons";
-import {FilterBody} from "../../../services/filter";
+import {FilterBody, FilterContext} from "../../../services/filter";
 import {useEvent} from "../../../hooks/use-event";
 import {EVENTS} from "../../../constants/app";
-import {FilterContext} from "../layout/context";
 
 type FilterModalProps = {
     control: [boolean, Dispatch<SetStateAction<boolean>>],

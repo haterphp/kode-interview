@@ -8,8 +8,7 @@ import Actions from "../../services/api/recipes/requests";
 import {GetAllRecipesResponse, Recipe} from "../../services/api/recipes/types";
 import {useNavigate} from "react-router-dom";
 import {SkeletonCard} from "../tools/cards/skeleton-card";
-import {useFilter} from "../../services/filter";
-import {FilterContext} from "../tools/layout/context";
+import {FilterContext, useFilter} from "../../services/filter";
 
 const PageWrapper = styled.div`
   display: flex;
@@ -53,8 +52,6 @@ const IndexPage: FC = () => {
         },
         { title: "", cuisine: selectedFilters, calories: selectedCalories }
     );
-
-    console.log(filtered)
 
     useEffect(() => {
         makeRequest<GetAllRecipesResponse>(Actions.getAll).then(data => {

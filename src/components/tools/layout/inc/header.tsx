@@ -13,7 +13,6 @@ import {EVENTS} from "../../../../constants/app";
 import {useNavigate} from "react-router-dom";
 import FilterModal from "../../modals/filter-modal";
 import {FilterBody} from "../../../../services/filter";
-import {FilterContext} from "../context";
 
 const HeaderWrapper = styled.div<{ small?: boolean }>`
   height: ${({small}) => small ? 292 : 600}px;
