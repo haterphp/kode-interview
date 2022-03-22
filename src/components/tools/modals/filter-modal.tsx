@@ -47,33 +47,54 @@ const FilterModalFooter = styled(ModalFooter)`
 
 type FilterModalBody = Omit<FilterBody, 'title'>;
 
+type FilterIsChangedProps = {
+    cuisine: { init: string[], selected: string[] },
+    calories: { init: [number, number], selected: [number, number] },
+}
+const filterIsChanged = ({ cuisine, calories } : FilterIsChangedProps) =>
+    !_.isEqual(cuisine.init, cuisine.selected) || !_.isEqual(calories.init, calories.selected)
+
 const FilterModal: FC<FilterModalProps> = ({ control: [open, setOpen] }) => {
 
     const {dispatch} = useEvent();
-    const {filters, setSelectedFilters, selectedFilters} = useContext(FilterContext);
-    const {control, handleSubmit, reset, formState: {isDirty}, setValue, resetField} = useForm<FilterModalBody>({ defaultValues: { cuisine: selectedFilters } })
+    const {filters, setSelectedFilters, selectedFilters, calories, selectedCalories, setSelectedCalories} = useContext(FilterContext);
+    const {
+        control,
+        handleSubmit,
+        reset,
+        formState: {isDirty},
+        setValue,
+        resetField
+    } = useForm<FilterModalBody>({ defaultValues: { cuisine: selectedFilters } })
 
     useEffect(() => {
         open && reset({
-            cuisine: selectedFilters
+            cuisine: selectedFilters,
+            calories: selectedCalories
         })
     }, [open])
 
     const handlers = {
         close: (e: unknown) => {
             resetField('cuisine');
+            resetField('calories');
             setOpen(false)
         },
         submit: (data: FilterModalBody) => {
             dispatch<FilterModalBody>(EVENTS.FILTER, data);
             setSelectedFilters(data.cuisine);
+            setSelectedCalories(data.calories);
             setOpen(false);
         },
         clear: (e: unknown) => {
             // e.preventDefault();
-            resetField('cuisine');
+            reset({
+                cuisine: filters,
+                calories
+            })
             setSelectedFilters(filters);
-            dispatch<FilterModalBody>(EVENTS.FILTER, { cuisine: filters })
+            setSelectedCalories(calories);
+            dispatch<FilterModalBody>(EVENTS.FILTER, { cuisine: filters, calories })
         }
     }
 
@@ -94,10 +115,13 @@ const FilterModal: FC<FilterModalProps> = ({ control: [open, setOpen] }) => {
                             ))
                         }
                     </CheckboxContainer>
-                    <FilterRange breakpoints={[ 100, 1200 ]} />
+                    <FilterRange name={'calories'} control={control} breakpoints={calories} />
                 </ModalContent>
                 <FilterModalFooter>
-                    { isDirty ? <Button variant={"outlined"} type={"button"} onClick={handlers.clear}>Clear</Button> : <span/>}
+                    { filterIsChanged({
+                        cuisine: { init: filters, selected: selectedFilters },
+                        calories: { init: calories, selected: selectedCalories },
+                    }) || isDirty ? <Button variant={"outlined"} type={"button"} onClick={handlers.clear}>Clear</Button> : <span/>}
                     <Button variant={"filled"}>Show Recipes</Button>
                 </FilterModalFooter>
             </Control.Form>

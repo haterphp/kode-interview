@@ -1,10 +1,12 @@
 import {Dispatch, SetStateAction, useCallback, useEffect, useState} from "react";
 import {EVENTS} from "../constants/app";
 import {useEvent} from "../hooks/use-event";
+import {log} from "util";
 
 export type FilterBody = {
     title: string;
     cuisine: string[];
+    calories: [number, number];
 }
 
 export const useFilter = <TState, TFilter = FilterBody>(
@@ -32,7 +34,7 @@ export const useFilter = <TState, TFilter = FilterBody>(
         }
     }, [filter])
 
-    useEffect(() => setStateFiltered(state), [state])
+    useEffect(() => state && setStateFiltered(filterStrategy(filter, state)), [state])
 
     useEffect(() => {
         listen(EVENTS.FILTER, filterUpdateListener)
@@ -40,7 +42,9 @@ export const useFilter = <TState, TFilter = FilterBody>(
     }, [filterUpdateListener])
 
     const handlers = {
-        register: (newState: TState) => setTimeout(() => setState(newState), 2000),
+        register: (newState: TState) => setTimeout(() => {
+            setState(newState)
+        }, 2000),
         update: (newState: TState) => {
             setStateFiltered(undefined);
             setTimeout(() => setStateFiltered(newState), 1500)

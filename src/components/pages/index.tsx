@@ -38,7 +38,7 @@ const PageWrapper = styled.div`
 const IndexPage: FC = () => {
 
     const navigate = useNavigate();
-    const { filters } = useContext(FilterContext)
+    const { selectedCalories, selectedFilters } = useContext(FilterContext);
     const { filtered, handlers: {register} } = useFilter<Recipe[]>(
         undefined,
         (filter, state) => {
@@ -48,14 +48,18 @@ const IndexPage: FC = () => {
                 .reduce((arr, item) => {
                     if(filter.cuisine.includes(item.cuisine.title)) arr = [...arr, item];
                     return arr;
-                }, [] as Recipe[]);
+                }, [] as Recipe[])
+                .filter(item => item.caloricity >= filter.calories[0] && item.caloricity <= filter.calories[1]);
         },
-        { title: "", cuisine: filters }
+        { title: "", cuisine: selectedFilters, calories: selectedCalories }
     );
+
+    console.log(filtered)
 
     useEffect(() => {
         makeRequest<GetAllRecipesResponse>(Actions.getAll).then(data => {
             register(data.recipes)
+            console.log('registered')
         })
     }, []);
 

@@ -23,12 +23,24 @@ const Layout: FC<{ smallHeader?: boolean }> = ({ children, smallHeader }) => {
         'Chinese',
     ];
 
-    const [selectedFilters, setSelectedFilters] = useState(filters);
+    const calories: [number, number] = [100, 1200];
+
+    const [selectedFilters, setSelectedFilters] = useState(JSON.parse(localStorage.getItem('cuisine')!) ?? filters);
+    const [selectedCalories, setSelectedCalories] = useState(JSON.parse(localStorage.getItem('calories')!) ?? calories);
 
     const context = {
         filters,
         selectedFilters,
-        setSelectedFilters
+        setSelectedFilters: (values: typeof filters) => {
+            setSelectedFilters(values);
+            localStorage.setItem('cuisine', JSON.stringify(values))
+        },
+        calories,
+        selectedCalories,
+        setSelectedCalories: (values: typeof calories) => {
+            setSelectedCalories(values);
+            localStorage.setItem('calories', JSON.stringify(values))
+        }
     }
 
     return (
